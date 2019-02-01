@@ -223,6 +223,7 @@ export default class QRCodeScanner extends Component {
             <Camera
               style={[styles.camera, this.props.cameraStyle]}
               onBarCodeRead={this._handleBarCodeRead.bind(this)}
+              captureAudio={false}
               type={this.props.cameraType}
               {...this.props.cameraProps}
             >
@@ -236,6 +237,7 @@ export default class QRCodeScanner extends Component {
           type={cameraType}
           style={[styles.camera, this.props.cameraStyle]}
           onBarCodeRead={this._handleBarCodeRead.bind(this)}
+          captureAudio={false}
           {...this.props.cameraProps}
         >
           {this._renderCameraMarker()}
@@ -283,7 +285,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: 'transparent',
-    height: Dimensions.get('window').width,
+    height: Dimensions.get('window').height,
     width: Dimensions.get('window').width,
   },
 
