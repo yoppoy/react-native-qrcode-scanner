@@ -1,6 +1,6 @@
 'use strict';
 
-import React, { Component } from 'react';
+import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 
 import {
@@ -16,13 +16,16 @@ import {
 } from 'react-native';
 
 import Permissions from 'react-native-permissions';
-import { RNCamera as Camera } from 'react-native-camera';
+import {RNCamera as Camera} from 'react-native-camera';
 import * as Animatable from "react-native-animatable";
 
 const PERMISSION_AUTHORIZED = 'authorized';
 const CAMERA_PERMISSION = 'camera';
-const SCREEN_HEIGHT = Dimensions.get("window").height;
 const SCREEN_WIDTH = Dimensions.get("window").width;
+const rectDimensions = SCREEN_WIDTH * 0.65; // this is equivalent to 255 from a 393 device width
+const rectBorderWidth = SCREEN_WIDTH * 0.005; // this is equivalent to 2 from a 393 device width
+const scanBarWidth = SCREEN_WIDTH * 0.60; // this is equivalent to 180 from a 393 device width
+const scanBarHeight = SCREEN_WIDTH * 0.005; //this is equivalent to 1 from a 393 device width
 
 export default class QRCodeScanner extends Component {
   static propTypes = {
@@ -103,6 +106,7 @@ export default class QRCodeScanner extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      ready: false,
       scanning: false,
       fadeInOpacity: new Animated.Value(0),
       isAuthorized: false,
@@ -134,15 +138,16 @@ export default class QRCodeScanner extends Component {
             ? granted === PermissionsAndroid.RESULTS.GRANTED
             : granted === true;
 
-        this.setState({ isAuthorized, isAuthorizationChecked: true });
+        this.setState({isAuthorized, isAuthorizationChecked: true});
       });
     } else {
-      this.setState({ isAuthorized: true, isAuthorizationChecked: true });
+      this.setState({isAuthorized: true, isAuthorizationChecked: true});
     }
   }
 
   componentDidMount() {
     this.props.onMount();
+    this.setState({ready: true});
     if (this.props.fadeIn) {
       Animated.sequence([
         Animated.delay(1000),
@@ -155,14 +160,15 @@ export default class QRCodeScanner extends Component {
   }
 
   disable() {
-    this.setState({ disableVibrationByUser: true });
+    this.setState({disableVibrationByUser: true});
   }
+
   enable() {
-    this.setState({ disableVibrationByUser: false });
+    this.setState({disableVibrationByUser: false});
   }
 
   _setScanning(value) {
-    this.setState({ scanning: value });
+    this.setState({scanning: value});
   }
 
   _handleBarCodeRead(e) {
@@ -214,7 +220,7 @@ export default class QRCodeScanner extends Component {
         return (
           <View style={styles.rectangleContainer}>
             <View style={styles.topOverlay}>
-
+              {this._renderTopContent()}
             </View>
             <View style={{flexDirection: "row"}}>
               <View style={styles.leftAndRightOverlay}/>
@@ -230,17 +236,14 @@ export default class QRCodeScanner extends Component {
                     "translateY",
                     SCREEN_WIDTH * -0.8
                   )}
+                  useNativeDriver={true}
                 />
                 }
               </View>
-
               <View style={styles.leftAndRightOverlay}/>
             </View>
-
             <View style={styles.bottomOverlay}>
-              <Text style={{fontSize: 15, color: "white"}}>
-                Scan a SmartLocker
-              </Text>
+              {this._renderBottomContent()}
             </View>
           </View>
         );
@@ -255,7 +258,7 @@ export default class QRCodeScanner extends Component {
       pendingAuthorizationView,
       cameraType,
     } = this.props;
-    const { isAuthorized, isAuthorizationChecked } = this.state;
+    const {isAuthorized, isAuthorizationChecked} = this.state;
     if (isAuthorized) {
       if (this.props.fadeIn) {
         return (
@@ -334,20 +337,6 @@ const styles = StyleSheet.create({
     width: Dimensions.get('window').width,
   },
 
-  rectangleContainer: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: 'transparent',
-  },
-
-  rectangle: {
-    height: 250,
-    width: 250,
-    borderWidth: 2,
-    borderColor: '#00FF00',
-    backgroundColor: 'transparent',
-  },
   rectangleContainer: {
     flex: 1,
     alignItems: "center",
