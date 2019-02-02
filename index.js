@@ -24,6 +24,7 @@ const CAMERA_PERMISSION = 'camera';
 export default class QRCodeScanner extends Component {
   static propTypes = {
     onRead: PropTypes.func.isRequired,
+    onMount: PropTypes.func,
     vibrate: PropTypes.bool,
     reactivate: PropTypes.bool,
     reactivateTimeout: PropTypes.number,
@@ -47,6 +48,7 @@ export default class QRCodeScanner extends Component {
 
   static defaultProps = {
     onRead: () => console.log('QR code scanned!'),
+    onMount: () => console.log('Loaded');
     reactivate: false,
     vibrate: true,
     reactivateTimeout: 0,
@@ -137,6 +139,7 @@ export default class QRCodeScanner extends Component {
   }
 
   componentDidMount() {
+    this.props.onMount();
     if (this.props.fadeIn) {
       Animated.sequence([
         Animated.delay(1000),
