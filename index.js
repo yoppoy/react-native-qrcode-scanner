@@ -17,9 +17,12 @@ import {
 
 import Permissions from 'react-native-permissions';
 import { RNCamera as Camera } from 'react-native-camera';
+import * as Animatable from "react-native-animatable";
 
 const PERMISSION_AUTHORIZED = 'authorized';
 const CAMERA_PERMISSION = 'camera';
+const SCREEN_HEIGHT = Dimensions.get("window").height;
+const SCREEN_WIDTH = Dimensions.get("window").width;
 
 export default class QRCodeScanner extends Component {
   static propTypes = {
@@ -192,6 +195,17 @@ export default class QRCodeScanner extends Component {
     return null;
   }
 
+  _scannerAnimation(translationType, fromValue) {
+    return {
+      from: {
+        [translationType]: SCREEN_WIDTH * -0.18
+      },
+      to: {
+        [translationType]: fromValue
+      }
+    };
+  }
+
   _renderCameraMarker() {
     if (this.props.showMarker) {
       if (this.props.customMarker) {
@@ -199,7 +213,35 @@ export default class QRCodeScanner extends Component {
       } else {
         return (
           <View style={styles.rectangleContainer}>
-            <View style={[styles.rectangle, this.props.markerStyle ? this.props.markerStyle : null]} />
+            <View style={styles.topOverlay}>
+
+            </View>
+            <View style={{flexDirection: "row"}}>
+              <View style={styles.leftAndRightOverlay}/>
+              <View style={styles.rectangle}>
+                {this.state.ready &&
+                <Animatable.View
+                  style={styles.scanBar}
+                  direction="alternate-reverse"
+                  iterationCount="infinite"
+                  duration={1700}
+                  easing="linear"
+                  animation={this._scannerAnimation(
+                    "translateY",
+                    SCREEN_WIDTH * -0.8
+                  )}
+                />
+                }
+              </View>
+
+              <View style={styles.leftAndRightOverlay}/>
+            </View>
+
+            <View style={styles.bottomOverlay}>
+              <Text style={{fontSize: 15, color: "white"}}>
+                Scan a SmartLocker
+              </Text>
+            </View>
           </View>
         );
       }
@@ -305,5 +347,54 @@ const styles = StyleSheet.create({
     borderWidth: 2,
     borderColor: '#00FF00',
     backgroundColor: 'transparent',
+  },
+  rectangleContainer: {
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: "transparent"
+  },
+
+  rectangle: {
+    height: rectDimensions,
+    width: rectDimensions,
+    borderWidth: rectBorderWidth,
+    borderColor: "white",
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: "transparent",
+    position: 'relative',
+  },
+
+  topOverlay: {
+    flex: 1,
+    height: SCREEN_WIDTH,
+    width: SCREEN_WIDTH,
+    backgroundColor: "rgba(0,0,0,0.5)",
+    justifyContent: "center",
+    alignItems: "center"
+  },
+
+  bottomOverlay: {
+    flex: 1,
+    height: SCREEN_WIDTH,
+    width: SCREEN_WIDTH,
+    backgroundColor: "rgba(0,0,0,0.5)",
+    alignItems: "center",
+    paddingTop: 10,
+    paddingBottom: SCREEN_WIDTH * 0.25
+  },
+
+  leftAndRightOverlay: {
+    height: SCREEN_WIDTH * 0.65,
+    width: SCREEN_WIDTH,
+    backgroundColor: "rgba(0,0,0,0.5)"
+  },
+
+  scanBar: {
+    width: scanBarWidth,
+    height: scanBarHeight,
+    marginTop: SCREEN_WIDTH * 0.97,
+    backgroundColor: "white"
   },
 });
