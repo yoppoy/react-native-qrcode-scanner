@@ -36,6 +36,7 @@ export default class QRCodeScanner extends Component {
     reactivateTimeout: PropTypes.number,
     fadeIn: PropTypes.bool,
     showMarker: PropTypes.bool,
+    renderScanner: PropTypes.bool,
     cameraType: PropTypes.oneOf(['front', 'back']),
     customMarker: PropTypes.element,
     containerStyle: PropTypes.any,
@@ -215,6 +216,7 @@ export default class QRCodeScanner extends Component {
   _renderCameraMarker() {
     if (this.props.showMarker) {
       if (this.props.customMarker) {
+        console.log('MARKER : ');
         return this.props.customMarker;
       } else {
         return (
@@ -222,6 +224,7 @@ export default class QRCodeScanner extends Component {
             <View style={styles.topOverlay}>
               {this._renderTopContent()}
             </View>
+            {this.props.renderScanner &&
             <View style={{flexDirection: "row"}}>
               <View style={styles.leftAndRightOverlay}/>
               <View style={styles.rectangle}>
@@ -242,6 +245,7 @@ export default class QRCodeScanner extends Component {
               </View>
               <View style={styles.leftAndRightOverlay}/>
             </View>
+            }
             <View style={styles.bottomOverlay}>
               {this._renderBottomContent()}
             </View>

@@ -35,6 +35,7 @@ export interface RNQRCodeScannerProps {
   reactivateTimeout?: number,
   fadeIn?: boolean,
   showMarker?: boolean,
+  renderScanner?: boolean,
   cameraType?: "front" | "back",
   customMarker?: JSX.Element,
   containerStyle?: RegisteredStyle<ViewStyle>,
