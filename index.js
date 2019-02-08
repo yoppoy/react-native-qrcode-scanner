@@ -225,7 +225,7 @@ export default class QRCodeScanner extends Component {
             <View style={{flexDirection: "row"}}>
               <View style={styles.leftAndRightOverlay}/>
               <View style={styles.rectangle}>
-                {(this.state.ready && this.state.scanning) &&
+                {(this.state.ready && !this.state.scanning) &&
                 <Animatable.View
                   style={styles.scanBar}
                   direction="alternate-reverse"
