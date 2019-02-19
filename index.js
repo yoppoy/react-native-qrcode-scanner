@@ -32,11 +32,14 @@ export default class QRCodeScanner extends Component {
     onRead: PropTypes.func.isRequired,
     onMount: PropTypes.func,
     vibrate: PropTypes.bool,
+    disabled: PropTypes.bool,
     reactivate: PropTypes.bool,
     reactivateTimeout: PropTypes.number,
     fadeIn: PropTypes.bool,
     showMarker: PropTypes.bool,
-    renderScanner: PropTypes.bool,
+    showTop: PropTypes.bool,
+    showBottom: PropTypes.bool,
+    showScanner: PropTypes.bool,
     cameraType: PropTypes.oneOf(['front', 'back']),
     customMarker: PropTypes.element,
     containerStyle: PropTypes.any,
@@ -58,9 +61,13 @@ export default class QRCodeScanner extends Component {
     onMount: () => console.log('Loaded'),
     reactivate: false,
     vibrate: true,
+    disabled: false,
     reactivateTimeout: 0,
     fadeIn: true,
     showMarker: false,
+    showScanner: true,
+    showTop: true,
+    showBottom: true,
     cameraType: 'back',
     notAuthorizedView: (
       <View
@@ -108,7 +115,7 @@ export default class QRCodeScanner extends Component {
     super(props);
     this.state = {
       ready: false,
-      scanning: false,
+      scanning: props.disabled,
       fadeInOpacity: new Animated.Value(0),
       isAuthorized: false,
       isAuthorizationChecked: false,
@@ -221,10 +228,12 @@ export default class QRCodeScanner extends Component {
       } else {
         return (
           <View style={styles.rectangleContainer}>
+            {this.props.showTop &&
             <View style={styles.topOverlay}>
               {this._renderTopContent()}
             </View>
-            {this.props.renderScanner &&
+            }
+            {this.props.showScanner &&
             <View style={{flexDirection: "row"}}>
               <View style={styles.leftAndRightOverlay}/>
               <View style={styles.rectangle}>
@@ -246,9 +255,11 @@ export default class QRCodeScanner extends Component {
               <View style={styles.leftAndRightOverlay}/>
             </View>
             }
-            <View style={styles.bottomOverlay}>
+            {this.props.showBottom &&
+            <View style={[styles.bottomOverlay, !this.props.showTop && styles.verticalAlign]}>
               {this._renderBottomContent()}
             </View>
+            }
           </View>
         );
       }
@@ -376,6 +387,10 @@ const styles = StyleSheet.create({
     alignItems: "center",
     paddingTop: 10,
     paddingBottom: SCREEN_WIDTH * 0.25
+  },
+
+  verticalAlign: {
+    justifyContent: 'center'
   },
 
   leftAndRightOverlay: {
