@@ -36,6 +36,7 @@ export default class QRCodeScanner extends Component {
     reactivate: PropTypes.bool,
     reactivateTimeout: PropTypes.number,
     fadeIn: PropTypes.bool,
+    hideCamera: PropTypes.bool,
     showMarker: PropTypes.bool,
     showTop: PropTypes.bool,
     showBottom: PropTypes.bool,
@@ -64,6 +65,7 @@ export default class QRCodeScanner extends Component {
     disabled: false,
     reactivateTimeout: 0,
     fadeIn: true,
+    hideCamera: false,
     showMarker: false,
     showScanner: true,
     showTop: true,
@@ -220,6 +222,12 @@ export default class QRCodeScanner extends Component {
     };
   }
 
+  _background() {
+    if (this.props.hideCamera)
+      return ({backgroundColor: "rgba(0,0,0,0.9)"});
+    return ({backgroundColor: "rgba(0,0,0,0.5)"});
+  }
+
   _renderCameraMarker() {
     if (this.props.showMarker) {
       if (this.props.customMarker) {
@@ -229,13 +237,13 @@ export default class QRCodeScanner extends Component {
         return (
           <View style={styles.rectangleContainer}>
             {this.props.showTop &&
-            <View style={styles.topOverlay}>
+            <View style={[styles.topOverlay, this._background()]}>
               {this._renderTopContent()}
             </View>
             }
             {this.props.showScanner &&
             <View style={{flexDirection: "row"}}>
-              <View style={styles.leftAndRightOverlay}/>
+              <View style={[styles.leftAndRightOverlay, this._background()]}/>
               <View style={styles.rectangle}>
                 {(this.state.ready && !this.state.scanning) &&
                 <Animatable.View
@@ -252,11 +260,11 @@ export default class QRCodeScanner extends Component {
                 />
                 }
               </View>
-              <View style={styles.leftAndRightOverlay}/>
+              <View style={[styles.leftAndRightOverlay, this._background()]}/>
             </View>
             }
             {this.props.showBottom &&
-            <View style={[styles.bottomOverlay, !this.props.showTop && styles.verticalAlign]}>
+            <View style={[styles.bottomOverlay, !this.props.showTop && styles.verticalAlign, this._background()]}>
               {this._renderBottomContent()}
             </View>
             }
