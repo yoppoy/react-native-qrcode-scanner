@@ -225,7 +225,7 @@ export default class QRCodeScanner extends Component {
   _background() {
     if (this.props.hideCamera)
       return ({backgroundColor: "black"});
-    return ({backgroundColor: "black"});
+    return ({backgroundColor: "rgba(0,0,0,0.5)"});
   }
 
   _renderCameraMarker() {
