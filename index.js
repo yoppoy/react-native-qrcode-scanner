@@ -237,7 +237,7 @@ export default class QRCodeScanner extends Component {
         return (
           <View style={styles.rectangleContainer}>
             {this.props.showTop &&
-            <View style={[styles.topOverlay, this._background()]}>
+            <View style={[styles.topOverlay, !this.props.showBottom && styles.verticalAlign, this._background()]}>
               {this._renderTopContent()}
             </View>
             }
@@ -383,13 +383,12 @@ const styles = StyleSheet.create({
     height: SCREEN_WIDTH,
     width: SCREEN_WIDTH,
     backgroundColor: "rgba(0,0,0,0.5)",
-    justifyContent: "center",
-    alignItems: "center"
+    //justifyContent: "center",
+    //alignItems: "center"
   },
 
   bottomOverlay: {
     flex: 1,
-    height: SCREEN_WIDTH,
     width: SCREEN_WIDTH,
     backgroundColor: "rgba(0,0,0,0.5)",
     alignItems: "center",
